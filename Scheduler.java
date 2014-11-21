@@ -11,29 +11,32 @@ public class Scheduler {
 
             // Get next process
             Process p = readyQueue.get(0);
-            System.out.printf("\nLoading process PID = %s\n", p.pid);
+            System.out.printf("\n\nLoading process PID = %s\n", p.pid);
             System.out.printf("\tProcess execution time: %f\n", p.executionTime);
             System.out.printf("\tProcess burst time: %f\n", p.burstTime);
 
-            // If the process execution time is less than burst time,
-            // then execute the process for a time quantum or until
-            // execution time == burst time
-            if (p.executionTime + timeQuantum <= p.burstTime) {
+            // If the process execution time is greater or equal to one
+            // time quantum, then execute the process for one time quantum.  
+            // If the execution time is less one time quantum, then execute
+            // the remainder of the process.
+            if (p.executionTime >= timeQuantum) {
                 System.out.printf("\tExecuting process PID = %s\n", p.pid);
                 sleep(convertToMillis(timeQuantum));
-                p.executionTime = p.executionTime + timeQuantum;
+                p.executionTime = p.executionTime - timeQuantum;
                 readyQueue.remove(0);
-            } else if (p.executionTime + timeQuantum > p.burstTime) {
+            } else {
                 System.out.printf("\tExecuting process PID = %s\n", p.pid);
-                sleep(convertToMillis(timeQuantum - (p.burstTime - p.executionTime)));
-                p.executionTime = p.executionTime + (p.burstTime - p.executionTime);
+                sleep(convertToMillis(p.executionTime));
+                p.executionTime = 0;
                 readyQueue.remove(0);
             }
 
-            // If execution time is still less than burst time, place
-            // process at beginning of ready queue
-            if (p.executionTime < p.burstTime) {
+            // If the process still has execution time, the put the process
+            // back into the ready queue.
+            if (p.executionTime > 0) {
                 readyQueue.add(p);
+            } else {
+                System.out.printf("\tProcess PID = %s has completed!\n", p.pid);
             }
         }
     }
@@ -45,6 +48,7 @@ public class Scheduler {
         */
 
         try {
+            System.out.printf("\tSleeping for %d\n", sleepTime);
             Thread.sleep(sleepTime);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -55,7 +59,6 @@ public class Scheduler {
 
         Double timeQuantumMilli = timeQuantum * 1000;
         int sleepTime = timeQuantumMilli.intValue();
-        System.out.printf("Sleeping for %d", sleepTime);
         return sleepTime;
     }
 }
