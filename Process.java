@@ -3,7 +3,7 @@ public class Process {
     String pid;
     double burstTime;
     double executionTime;
-    double waitingTime;
+    double waitTime;
     double turnaroundTime;
 
     public void Process() {
@@ -14,7 +14,7 @@ public class Process {
         pid = "1";
         burstTime = 0.0;
         executionTime = 0.0;
-        waitingTime = 0.0;
+        waitTime = 0.0;
         turnaroundTime = 0.0;
     }
 }
