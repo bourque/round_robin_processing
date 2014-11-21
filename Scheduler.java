@@ -26,10 +26,12 @@ public class Scheduler {
                 sleep(convertToMillis(timeQuantum), p.pid);
                 p.executionTime = p.executionTime - timeQuantum;
                 this.totalTime = this.totalTime + timeQuantum;
+                addWaitTime(readyQueue, timeQuantum);
                 readyQueue.remove(0);
             } else {
                 sleep(convertToMillis(p.executionTime), p.pid);
                 this.totalTime = this.totalTime + p.executionTime;
+                addWaitTime(readyQueue, p.executionTime);
                 p.executionTime = 0;
                 readyQueue.remove(0);
             }
@@ -71,6 +73,17 @@ public class Scheduler {
         return sleepTime;
     }
 
+
+    private void addWaitTime(List<Process> readyQueue, double waitTime) {
+        /*
+         * Add wait time to the processes that are not executing.
+        */
+
+        for (int i=1; i<readyQueue.size(); i++) {
+            Process p = readyQueue.get(i);
+            p.waitTime = p.waitTime + waitTime;
+        }
+    }
 
     private void printSummary() {
         /*
