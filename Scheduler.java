@@ -2,13 +2,34 @@ import java.util.*;
 
 public class Scheduler {
 
+
+    // Scheduler attributes
     double totalTime = 0.0;
     List<Process> completedProcesses = new ArrayList<Process>();
+
+    public class InterruptHandler extends Thread {
+        /*
+         * Inner class to handle interrupt during process execution.
+        */
+
+        public void run() {
+            /*
+             * Method to run interrupt handler code
+            */
+
+            System.out.printf("\n\nInterrupt detected.");
+            printSummary();
+        }
+    }
+
 
     public void roundRobin(List<Process> readyQueue, Double timeQuantum) {
         /*
          * Execute the scheduler using Round-Robin Scheduling.
         */
+
+        // Add interrupt handler
+        Runtime.getRuntime().addShutdownHook(new InterruptHandler());
 
         while (readyQueue.size() > 0) {
 
@@ -48,6 +69,7 @@ public class Scheduler {
         }
 
         // Print completed process statistics
+        System.out.printf("\n\n***All processes completed***\n");
         printSummary();
     }
 
@@ -67,6 +89,10 @@ public class Scheduler {
 
 
     private int convertToMillis(Double timeQuantum) {
+        /*
+         * Convert the time quantum from double (in seconds) to integer
+         * (in milliseconds)
+        */
 
         Double timeQuantumMilli = timeQuantum * 1000;
         int sleepTime = timeQuantumMilli.intValue();
@@ -90,18 +116,23 @@ public class Scheduler {
          * Print summary of completed process statistics
         */
 
-        System.out.printf("\n\n***All processes completed***\n");
         System.out.printf("\nTotal program execution time: %f seconds\n", this.totalTime);
-        for (int i=0; i<this.completedProcesses.size(); i++) {
 
-            Process completedProcess = this.completedProcesses.get(i);
-            double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
+        if (this.completedProcesses.size() == 0) {
+            System.out.println("No completed processes");
+        } else {
+            System.out.println("Completed processes:");
+            for (int i=0; i<this.completedProcesses.size(); i++) {
 
-            System.out.printf("\nProcess PID = %s:\n", completedProcess.pid);
-            System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
-            System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
-            System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
-            System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
+                Process completedProcess = this.completedProcesses.get(i);
+                double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
+
+                System.out.printf("\nProcess PID = %s:\n", completedProcess.pid);
+                System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
+                System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
+                System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
+                System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
+            }
         }
     }
 }
