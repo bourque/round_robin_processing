@@ -6,7 +6,7 @@ import java.util.List;
 public class Scheduler {
 
     // Scheduler attributes
-    double totalTime = 0.0;
+    Double totalTime = 0.0;
     List<Process> completedProcesses = new ArrayList<Process>();
 
     public class InterruptHandler extends Thread {
@@ -37,7 +37,7 @@ public class Scheduler {
 
             // Get next process
             Process p = readyQueue.get(0);
-            System.out.printf("\n\nLoading process PID = %s\n", p.pid);
+            System.out.printf("\n\nLoading process PID = %d\n", p.pid);
             System.out.printf("\tProcess burst time: %f\n", p.burstTime);
             System.out.printf("\tProcess execution time remaining: %f\n", p.executionTime);
 
@@ -55,7 +55,7 @@ public class Scheduler {
                 sleep(convertToMillis(p.executionTime), p.pid);
                 this.totalTime = this.totalTime + p.executionTime;
                 addWaitTime(readyQueue, p.executionTime);
-                p.executionTime = 0;
+                p.executionTime = 0.0;
                 readyQueue.remove(0);
             }
 
@@ -64,7 +64,7 @@ public class Scheduler {
             if (p.executionTime > 0) {
                 readyQueue.add(p);
             } else {
-                System.out.printf("\tProcess PID = %s has completed!\n", p.pid);
+                System.out.printf("\tProcess PID = %d has completed!\n", p.pid);
                 p.turnaroundTime = this.totalTime;
                 this.completedProcesses.add(p);
             }
@@ -78,13 +78,13 @@ public class Scheduler {
         Runtime.getRuntime().halt(0);
     }
 
-    private void sleep(int sleepTime, String pid) {
+    private void sleep(int sleepTime, Integer pid) {
         /*
          * Suspend the program execution for the timeQuantum amount.
          */
 
         try {
-            System.out.printf("\tExecuting process %s for %d milliseconds\n", pid, sleepTime);
+            System.out.printf("\tExecuting process %d for %d milliseconds\n", pid, sleepTime);
             Thread.sleep(sleepTime);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -102,7 +102,7 @@ public class Scheduler {
         return sleepTime;
     }
 
-    private void addWaitTime(List<Process> readyQueue, double waitTime) {
+    private void addWaitTime(List<Process> readyQueue, Double waitTime) {
         /*
          * Add wait time to the processes that are not executing.
          */
@@ -129,7 +129,7 @@ public class Scheduler {
                 Process completedProcess = this.completedProcesses.get(i);
                 double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
 
-                System.out.printf("\nProcess PID = %s:\n", completedProcess.pid);
+                System.out.printf("\nProcess PID = %d:\n", completedProcess.pid);
                 System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
                 System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
                 System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);

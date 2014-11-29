@@ -2,18 +2,18 @@
 
 public class Process {
 
-    String pid;
-    double burstTime;
-    double executionTime;
-    double waitTime;
-    double turnaroundTime;
+    Integer pid;
+    Double burstTime;
+    Double executionTime;
+    Double waitTime;
+    Double turnaroundTime;
 
     public Process() {
         /*
          * Constructor method.
          */
 
-        pid = "1";
+        pid = 1;
         burstTime = 0.0;
         executionTime = 0.0;
         waitTime = 0.0;
