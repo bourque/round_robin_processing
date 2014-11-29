@@ -44,7 +44,7 @@ public class Scheduler {
         // Initialize dispatcher
         Dispatcher dispatcher = new Dispatcher();
 
-        while (readyQueue.size() > 0) {
+        while (!readyQueue.isEmpty()) {
 
             // Get next process
             Process p = readyQueue.get(0);
