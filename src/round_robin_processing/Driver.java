@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class Driver {
 
-    public List<Integer> usedPIDs = new ArrayList<Integer>();
+    public static List<Integer> usedPIDs = new ArrayList<Integer>();
     public static Integer minPID = 0;
     public static Integer maxPID = 99999;
     public static Double minBurst = 5.0;
@@ -41,7 +41,17 @@ public class Driver {
         */
 
         Random r = new Random();
-        Integer pid = r.nextInt(maxPID - minPID) + minPID;
+        boolean pidFlag = true;
+        Integer pid = 0;
+
+        while (pidFlag) {
+            pid = r.nextInt(maxPID - minPID) + minPID;
+
+            if (!usedPIDs.contains(pid)) {
+                usedPIDs.add(pid);
+                pidFlag = false;
+            }
+        }
 
         return pid;
     }
