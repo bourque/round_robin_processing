@@ -33,6 +33,9 @@ public class Scheduler {
         // Add interrupt handler
         Runtime.getRuntime().addShutdownHook(new InterruptHandler());
 
+        // Initialize dispatcher
+        Dispatcher dispatcher = new Dispatcher();
+
         while (readyQueue.size() > 0) {
 
             // Get next process
@@ -46,13 +49,13 @@ public class Scheduler {
             // If the execution time is less one time quantum, then execute
             // the remainder of the process.
             if (p.executionTime >= timeQuantum) {
-                sleep(convertToMillis(timeQuantum), p.pid);
+                dispatcher.dispatch(p.pid, timeQuantum);
                 p.executionTime = p.executionTime - timeQuantum;
                 this.totalTime = this.totalTime + timeQuantum;
                 addWaitTime(readyQueue, timeQuantum);
                 readyQueue.remove(0);
             } else {
-                sleep(convertToMillis(p.executionTime), p.pid);
+                dispatcher.dispatch(p.pid, p.executionTime);
                 this.totalTime = this.totalTime + p.executionTime;
                 addWaitTime(readyQueue, p.executionTime);
                 p.executionTime = 0.0;
@@ -78,30 +81,6 @@ public class Scheduler {
         Runtime.getRuntime().halt(0);
     }
 
-    private void sleep(int sleepTime, Integer pid) {
-        /*
-         * Suspend the program execution for the timeQuantum amount.
-         */
-
-        try {
-            System.out.printf("\tExecuting process %d for %d milliseconds\n", pid, sleepTime);
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private int convertToMillis(Double timeQuantum) {
-        /*
-         * Convert the time quantum from double (in seconds) to integer (in
-         * milliseconds)
-         */
-
-        Double timeQuantumMilli = timeQuantum * 1000;
-        int sleepTime = timeQuantumMilli.intValue();
-        return sleepTime;
-    }
-
     private void addWaitTime(List<Process> readyQueue, Double waitTime) {
         /*
          * Add wait time to the processes that are not executing.
@@ -121,7 +100,7 @@ public class Scheduler {
         System.out.printf("\nTotal program execution time: %f seconds\n", this.totalTime);
 
         if (this.completedProcesses.size() == 0) {
-            System.out.println("No completed processes");
+            System.out.println("No completed processes\n");
         } else {
             System.out.println("Completed processes:");
             for (int i = 0; i < this.completedProcesses.size(); i++) {
@@ -135,6 +114,7 @@ public class Scheduler {
                 System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
                 System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
             }
+            System.out.println();
         }
     }
 }
