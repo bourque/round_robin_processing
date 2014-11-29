@@ -75,7 +75,7 @@ public class Scheduler {
             if (p.executionTime > 0) {
                 readyQueue.add(p);
             } else {
-                System.out.printf("\tProcess PID = %d has completed!\n", p.pid);
+                System.out.printf("Process PID = %d has completed!\n", p.pid);
                 p.turnaroundTime = this.totalTime;
                 this.completedProcesses.add(p);
             }

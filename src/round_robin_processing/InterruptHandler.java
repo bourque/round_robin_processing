@@ -25,8 +25,8 @@ public class InterruptHandler extends Thread {
          * Method to run interrupt handler code
          */
 
-        System.out.printf("\n\nUser interrupt detected.");
-        processSummary ps = new processSummary(completedProcesses, totalTime);
+        System.out.printf("\n\nUser interrupt detected.\n\n");
+        processSummary ps = new processSummary(this.completedProcesses, this.totalTime);
         ps.printSummary();
     }
 }
