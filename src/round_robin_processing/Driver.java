@@ -114,9 +114,23 @@ public class Driver {
                 readyQueue.add(process);
             }
 
-            // Schedule the processes
+            // Initialize the scheduler
             Scheduler scheduler = new Scheduler();
+
+            // Add interrupt handler in case of user interrupt
+            Runtime.getRuntime().addShutdownHook(
+                new InterruptHandler(scheduler.getCompletedProcesses(), scheduler.getTotalTime()));
+
+            // Schedule the processes
             scheduler.roundRobin(readyQueue, timeQuantum);
+
+            // Print summary of completed results
+            System.out.printf("\n\n*** All processes completed ***\n");
+            processSummary ps = new processSummary(scheduler.getCompletedProcesses(), scheduler.getTotalTime());
+            ps.printSummary();
+
+            // Exit the program
+            Runtime.getRuntime().halt(0);
 
         } else {
             printUsage();

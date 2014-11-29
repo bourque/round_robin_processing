@@ -9,22 +9,6 @@ public class Scheduler {
     Double totalTime = 0.0;
     List<Process> completedProcesses = new ArrayList<Process>();
 
-    public class InterruptHandler extends Thread {
-        /*
-         * Inner class to handle interrupt during process execution.
-         */
-
-        @Override
-        public void run() {
-            /*
-             * Method to run interrupt handler code
-             */
-
-            System.out.printf("\n\nInterrupt detected.");
-            printSummary();
-        }
-    }
-
     private void addWaitTime(List<Process> readyQueue, Double waitTime) {
         /*
          * Add wait time to the processes that are not executing.
@@ -36,39 +20,26 @@ public class Scheduler {
         }
     }
 
-    private void printSummary() {
+    public List<Process> getCompletedProcesses() {
         /*
-         * Print summary of completed process statistics
-         */
+         * Return the list of completed processes.
+        */
 
-        System.out.printf("\nTotal program execution time: %f seconds\n", this.totalTime);
+        return this.completedProcesses;
+    }
 
-        if (this.completedProcesses.size() == 0) {
-            System.out.println("No completed processes\n");
-        } else {
-            System.out.println("Completed processes:");
-            for (int i = 0; i < this.completedProcesses.size(); i++) {
+    public Double getTotalTime() {
+        /*
+         * Return the total system time.
+        */
 
-                Process completedProcess = this.completedProcesses.get(i);
-                double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
-
-                System.out.printf("\nProcess PID = %d:\n", completedProcess.pid);
-                System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
-                System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
-                System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
-                System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
-            }
-            System.out.println();
-        }
+        return this.totalTime;
     }
 
     public void roundRobin(List<Process> readyQueue, Double timeQuantum) {
         /*
          * Execute the scheduler using Round-Robin Scheduling.
          */
-
-        // Add interrupt handler
-        Runtime.getRuntime().addShutdownHook(new InterruptHandler());
 
         // Initialize dispatcher
         Dispatcher dispatcher = new Dispatcher();
@@ -109,12 +80,5 @@ public class Scheduler {
                 this.completedProcesses.add(p);
             }
         }
-
-        // Print completed process statistics
-        System.out.printf("\n\n*** All processes completed ***\n");
-        printSummary();
-
-        // Exit the program
-        Runtime.getRuntime().halt(0);
     }
 }
