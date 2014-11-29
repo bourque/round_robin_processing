@@ -75,34 +75,51 @@ public class Driver {
          */
 
         Object[] arguments = new Object[2];
-        try {
-            arguments[0] = args[0];
-            arguments[1] = args[1];
-        } catch (Exception e) {
-            System.out.println("Missing or invalid command line argument.");
-            System.exit(0);
-        }
+        arguments[0] = args[0];
+        arguments[1] = args[1];
 
         return arguments;
     }
 
-    public static void main(String[] args) {
+    private static void printUsage() {
+        /*
+         * Print out information on how to use the program.
+        */
 
-        // Parse agruments
-        Object[] arguments = parseArgs(args);
-        Integer numProcesses = Integer.parseInt(arguments[0].toString());
-        Double timeQuantum = Double.parseDouble(arguments[1].toString());
-
-        // Read in each process and place it in ready queue
-        List<Process> readyQueue = new ArrayList<Process>();
-        for (int i = 0; i < numProcesses; i++) {
-            Process process = initProcess();
-            readyQueue.add(process);
-        }
-
-        // Schedule the processes
-        Scheduler scheduler = new Scheduler();
-        scheduler.roundRobin(readyQueue, timeQuantum);
+        System.out.println("\nUsage: java Driver <numProc> <timeQuantum>\n");
+        System.out.println("\t<numProc> (int) - The number of processes");
+        System.out.println("\t<timeQuantum> (float) - The time quantum\n");
     }
 
+    public static void main(String[] args) {
+
+        if (args.length == 2) {
+
+            // Parse agruments
+            Object[] arguments = parseArgs(args);
+            Integer numProcesses = 0;
+            Double timeQuantum = 0.0;
+            try {
+                numProcesses = Integer.parseInt(arguments[0].toString());
+                timeQuantum = Double.parseDouble(arguments[1].toString());
+            } catch (Exception e) {
+                printUsage();
+                System.exit(0);
+            }
+
+            // Read in each process and place it in ready queue
+            List<Process> readyQueue = new ArrayList<Process>();
+            for (int i = 0; i < numProcesses; i++) {
+                Process process = initProcess();
+                readyQueue.add(process);
+            }
+
+            // Schedule the processes
+            Scheduler scheduler = new Scheduler();
+            scheduler.roundRobin(readyQueue, timeQuantum);
+
+        } else {
+            printUsage();
+        }
+    }
 }
