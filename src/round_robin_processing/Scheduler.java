@@ -25,6 +25,43 @@ public class Scheduler {
         }
     }
 
+    private void addWaitTime(List<Process> readyQueue, Double waitTime) {
+        /*
+         * Add wait time to the processes that are not executing.
+         */
+
+        for (int i = 1; i < readyQueue.size(); i++) {
+            Process p = readyQueue.get(i);
+            p.waitTime = p.waitTime + waitTime;
+        }
+    }
+
+    private void printSummary() {
+        /*
+         * Print summary of completed process statistics
+         */
+
+        System.out.printf("\nTotal program execution time: %f seconds\n", this.totalTime);
+
+        if (this.completedProcesses.size() == 0) {
+            System.out.println("No completed processes\n");
+        } else {
+            System.out.println("Completed processes:");
+            for (int i = 0; i < this.completedProcesses.size(); i++) {
+
+                Process completedProcess = this.completedProcesses.get(i);
+                double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
+
+                System.out.printf("\nProcess PID = %d:\n", completedProcess.pid);
+                System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
+                System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
+                System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
+                System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
+            }
+            System.out.println();
+        }
+    }
+
     public void roundRobin(List<Process> readyQueue, Double timeQuantum) {
         /*
          * Execute the scheduler using Round-Robin Scheduling.
@@ -79,42 +116,5 @@ public class Scheduler {
 
         // Exit the program
         Runtime.getRuntime().halt(0);
-    }
-
-    private void addWaitTime(List<Process> readyQueue, Double waitTime) {
-        /*
-         * Add wait time to the processes that are not executing.
-         */
-
-        for (int i = 1; i < readyQueue.size(); i++) {
-            Process p = readyQueue.get(i);
-            p.waitTime = p.waitTime + waitTime;
-        }
-    }
-
-    private void printSummary() {
-        /*
-         * Print summary of completed process statistics
-         */
-
-        System.out.printf("\nTotal program execution time: %f seconds\n", this.totalTime);
-
-        if (this.completedProcesses.size() == 0) {
-            System.out.println("No completed processes\n");
-        } else {
-            System.out.println("Completed processes:");
-            for (int i = 0; i < this.completedProcesses.size(); i++) {
-
-                Process completedProcess = this.completedProcesses.get(i);
-                double cpuUsage = (completedProcess.burstTime / this.totalTime) * 100.;
-
-                System.out.printf("\nProcess PID = %d:\n", completedProcess.pid);
-                System.out.printf("\tTotal Execution Time: %f\n", completedProcess.burstTime);
-                System.out.printf("\tWait Time: %f\n", completedProcess.waitTime);
-                System.out.printf("\tTurnaround Time: %f\n", completedProcess.turnaroundTime);
-                System.out.printf("\tCPU Usage: %f%%\n", cpuUsage);
-            }
-            System.out.println();
-        }
     }
 }
