@@ -13,59 +13,48 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Driver {
 
-    public static void main(String[] args) {
+    public List<Integer> usedPIDs = new ArrayList<Integer>();
+    public static Integer minPID = 0;
+    public static Integer maxPID = 99999;
+    public static Double minBurst = 5.0;
+    public static Double maxBurst = 10.0;
 
-        // Parse agruments
-        Object[] arguments = parseArgs(args);
-        String processFile = arguments[0].toString();
-        Double timeQuantum = Double.parseDouble(arguments[1].toString());
+    private static Double assignBurstTime() {
+        /*
+         * Return a random float between 5 and 10 to be used as a process
+         * burst time.
+        */
 
-        // Read in process list
-        List<String> processList = readProcesses(processFile);
+        Random r = new Random();
+        Double burstTime = minBurst + (maxBurst - minBurst) * r.nextDouble();
 
-        // Read in each process and place it in ready queue
-        List<Process> readyQueue = new ArrayList<Process>();
-        for (int i = 0; i < processList.size(); i++) {
-            Process process = initProcess(processList, i);
-            readyQueue.add(process);
-        }
-
-        // Schedule the processes
-        Scheduler scheduler = new Scheduler();
-        scheduler.roundRobin(readyQueue, timeQuantum);
+        return burstTime;
     }
 
-    private static Process initProcess(List<String> processList, int i) {
+    private static int assignPID() {
+        /*
+         * Return a random 0-5 digit integer to be used as a process ID.
+        */
+
+        Random r = new Random();
+        Integer pid = r.nextInt(maxPID - minPID) + minPID;
+
+        return pid;
+    }
+
+    private static Process initProcess() {
         /*
          * Read in the process and assign class attributes.
          */
 
-        // Read in process parameters from file
-        String processFile = processList.get(i);
-        List<String> attributeList = new ArrayList<String>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(processFile));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                attributeList.add(line);
-            }
-            reader.close();
-        } catch (Exception e) {
-            System.out.printf("Error reading in file %s", processFile);
-        }
-
-        // Parse attribute list
-        String pid = attributeList.get(0);
-        double burstTime = Double.parseDouble(attributeList.get(1));
-
-        // Assign attributes to process
         Process process = new Process();
-        process.pid = pid;
-        process.burstTime = burstTime;
-        process.executionTime = burstTime;
+        process.pid = assignPID();
+        process.burstTime = assignBurstTime();
+        process.executionTime = process.burstTime;
 
         return process;
     }
@@ -87,24 +76,23 @@ public class Driver {
         return arguments;
     }
 
-    private static List<String> readProcesses(String processFile) {
-        /*
-         * Return a list of processes to execute.
-         */
+    public static void main(String[] args) {
 
-        List<String> processList = new ArrayList<String>();
+        // Parse agruments
+        Object[] arguments = parseArgs(args);
+        Integer numProcesses = Integer.parseInt(arguments[0].toString());
+        Double timeQuantum = Double.parseDouble(arguments[1].toString());
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(processFile));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                processList.add(line);
-            }
-            reader.close();
-        } catch (Exception e) {
-            System.out.printf("Error reading in file", processFile);
+        // Read in each process and place it in ready queue
+        List<Process> readyQueue = new ArrayList<Process>();
+        for (int i = 0; i < numProcesses; i++) {
+            Process process = initProcess();
+            readyQueue.add(process);
         }
 
-        return processList;
+        // Schedule the processes
+        Scheduler scheduler = new Scheduler();
+        scheduler.roundRobin(readyQueue, timeQuantum);
     }
+
 }
