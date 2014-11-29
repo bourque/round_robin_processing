@@ -2,14 +2,6 @@
 
 public class Dispatcher {
 
-    public void dispatch(int pid, Double cpuTime) {
-        /*
-         * Dispatches the process to the CPU
-        */
-
-        execute(pid, convertToMillis(cpuTime));
-    }
-
     private int convertToMillis(Double cpuTime) {
         /*
          * Convert the time quantum from double (in seconds) to integer (in
@@ -21,6 +13,14 @@ public class Dispatcher {
         return cpuTimeInt;
     }
 
+    public void dispatch(int pid, Double cpuTime) {
+        /*
+         * Dispatches the process to the CPU
+        */
+
+        execute(pid, convertToMillis(cpuTime));
+    }
+
     private void execute(int pid, int cpuTime) {
         /*
          * Suspend the program execution for the timeQuantum amount.
@@ -29,6 +29,21 @@ public class Dispatcher {
         try {
             System.out.printf("\tExecuting process %d for %d milliseconds\n", pid, cpuTime);
             Thread.sleep(cpuTime);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void starve(Double cpuTime) {
+        /*
+         * Starve the CPU for the given amount of time.
+        */
+
+        int cpuTimeMilli = convertToMillis(cpuTime);
+
+        try {
+            System.out.println("Waiting for next process to arrive...\n");
+            Thread.sleep(cpuTimeMilli);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }

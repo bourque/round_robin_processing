@@ -12,6 +12,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -20,13 +21,25 @@ public class Driver {
     public static List<Integer> usedPIDs = new ArrayList<Integer>();
     public static Integer minPID = 0;
     public static Integer maxPID = 99999;
+    public static Double minArrival = 0.0;
+    public static Double maxArrival = 10.0;
     public static Double minBurst = 5.0;
     public static Double maxBurst = 10.0;
 
+    private static Double assignArrivalTime() {
+        /*
+         * Return a random float to be used as a process arrival time
+        */
+
+        Random r = new Random();
+        Double arrivalTime = minArrival + (maxArrival - minArrival) * r.nextDouble();
+
+        return arrivalTime;
+    }
+
     private static Double assignBurstTime() {
         /*
-         * Return a random float between 5 and 10 to be used as a process
-         * burst time.
+         * Return a random float to be used as a process burst time.
         */
 
         Random r = new Random();
@@ -58,11 +71,12 @@ public class Driver {
 
     private static Process initProcess() {
         /*
-         * Read in the process and assign class attributes.
+         * Create new process and assign it atributes.
          */
 
         Process process = new Process();
         process.pid = assignPID();
+        process.arrivalTime = assignArrivalTime();
         process.burstTime = assignBurstTime();
         process.executionTime = process.burstTime;
 
@@ -79,6 +93,21 @@ public class Driver {
         arguments[1] = args[1];
 
         return arguments;
+    }
+
+    private static void printProcessesToExecute(List<Process> processQueue) {
+        /*
+         * Prints out the processes to be executed.
+        */
+
+        System.out.println("\n\nProcesses generated:");
+        for (int i=0; i<processQueue.size(); i++) {
+            Process p = processQueue.get(i);
+            System.out.printf("\nPID = %d\n", p.pid);
+            System.out.printf("Burst Time: %f\n", p.burstTime);
+            System.out.printf("Arrival Time: %f\n", p.arrivalTime);
+        }
+        System.out.println();
     }
 
     private static void printUsage() {
@@ -107,22 +136,25 @@ public class Driver {
                 System.exit(0);
             }
 
-            // Read in each process and place it in ready queue
-            List<Process> readyQueue = new ArrayList<Process>();
+            // Initialize each process and place it in a process queue
+            List<Process> processQueue = new ArrayList<Process>();
             for (int i = 0; i < numProcesses; i++) {
                 Process process = initProcess();
-                readyQueue.add(process);
+                processQueue.add(process);
             }
 
+            // Print out process queue
+            printProcessesToExecute(processQueue);
+
             // Initialize the scheduler
-            Scheduler scheduler = new Scheduler();
+            Scheduler scheduler = new Scheduler(timeQuantum);
 
             // Add interrupt handler in case of user interrupt
             Runtime.getRuntime().addShutdownHook(
                 new InterruptHandler(scheduler.getCompletedProcesses(), scheduler.getTotalTime()));
 
             // Schedule the processes
-            scheduler.roundRobin(readyQueue, timeQuantum);
+            scheduler.roundRobin(processQueue);
 
             // Print summary of completed results
             System.out.printf("\n\n*** All processes completed ***\n");

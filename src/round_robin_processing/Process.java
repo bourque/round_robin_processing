@@ -3,6 +3,7 @@
 public class Process {
 
     Integer pid;
+    Double arrivalTime;
     Double burstTime;
     Double executionTime;
     Double waitTime;
@@ -14,6 +15,7 @@ public class Process {
          */
 
         pid = 1;
+        arrivalTime = 0.0;
         burstTime = 0.0;
         executionTime = 0.0;
         waitTime = 0.0;
