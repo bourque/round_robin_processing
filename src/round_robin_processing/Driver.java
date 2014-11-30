@@ -1,13 +1,35 @@
 //package round_robin_processing;
 
-/* Matthew Bourque
- * Ravi Chandra
- * COSC 519
- * Process Modeling Project
- *
- * This program is the main driver for the round-robin process scheduling
- * project.
- */
+/*
+Process Simulation Using Round-Robin Scheduling
+COSC 519
+
+Authors:
+    Matthew Bourque
+    Ravi Chandra
+
+Purpose:
+    This program simulates a the creation, loading, scheduling, dispatching, and execution of 
+    processes using the round-robin scheduling algorithm.
+
+Classes:
+    The program contains the following classes:
+
+        Driver - The main driver of the program. This class is executed in order to perform the simulation.
+        Process - Contains process attributes.
+        Scheduler - Performs the scheduling of processes using the round-robin scheduling algorithm.
+        Dispatcher - Assigns a process to a CPU and executes the process.
+        InterruptHandler - Contains an algorithm to handle user interrupts during process simulation.
+        ProcessSummary - Prints a summary of completed processes showing process statistics.
+
+Usage:
+    The program is executed with two command line arguments:
+
+        >>> java <numProcs> <timeQuantum>
+
+    <numProcs> - The number of processes to create and simulate
+    <timeQuantum> - The quantum time used during scheduling
+*/
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,7 +39,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Driver {
+    /*
+     * The main driver class.  Executes the program.
+    */
 
+    // Define class attributes
     public static List<Integer> usedPIDs = new ArrayList<Integer>();
     public static Integer minPID = 0;
     public static Integer maxPID = 99999;
@@ -25,6 +51,7 @@ public class Driver {
     public static Double maxArrival = 10.0;
     public static Double minBurst = 5.0;
     public static Double maxBurst = 10.0;
+
 
     private static Double assignArrivalTime() {
         /*
@@ -37,6 +64,7 @@ public class Driver {
         return arrivalTime;
     }
 
+
     private static Double assignBurstTime() {
         /*
          * Return a random float to be used as a process burst time.
@@ -48,6 +76,7 @@ public class Driver {
         return burstTime;
     }
 
+
     private static int assignPID() {
         /*
          * Return a random 0-5 digit integer to be used as a process ID.
@@ -57,6 +86,7 @@ public class Driver {
         boolean pidFlag = true;
         Integer pid = 0;
 
+        // Only return a pid that hasn't already been used
         while (pidFlag) {
             pid = r.nextInt(maxPID - minPID) + minPID;
 
@@ -68,6 +98,7 @@ public class Driver {
 
         return pid;
     }
+
 
     private static List<Process> getTestProcessList() {
         /*
@@ -97,9 +128,10 @@ public class Driver {
         return testProcessList;
     }
 
+
     private static Process initProcess() {
         /*
-         * Create new process and assign it atributes.
+         * Create new process and assign its atributes.
          */
 
         Process process = new Process();
@@ -111,17 +143,6 @@ public class Driver {
         return process;
     }
 
-    private static Object[] parseArgs(String[] args) {
-        /*
-         * Parse command line arguments. Return arguments in a list of objects.
-         */
-
-        Object[] arguments = new Object[2];
-        arguments[0] = args[0];
-        arguments[1] = args[1];
-
-        return arguments;
-    }
 
     private static void printProcessesToExecute(List<Process> processList) {
         /*
@@ -138,6 +159,7 @@ public class Driver {
         System.out.println();
     }
 
+
     private static void printUsage() {
         /*
          * Print out information on how to use the program.
@@ -148,23 +170,24 @@ public class Driver {
         System.out.println("\t<timeQuantum> (float) - The time quantum\n");
     }
 
+
     public static void main(String[] args) {
 
+        // Proceed with simulation of user provided appropriate command line arguments
         if (args.length == 2) {
 
             // Parse agruments
-            Object[] arguments = parseArgs(args);
             Integer numProcesses = 0;
             Double timeQuantum = 0.0;
             try {
-                numProcesses = Integer.parseInt(arguments[0].toString());
-                timeQuantum = Double.parseDouble(arguments[1].toString());
+                numProcesses = Integer.parseInt(args[0].toString());
+                timeQuantum = Double.parseDouble(args[1].toString());
             } catch (Exception e) {
                 printUsage();
                 System.exit(0);
             }
 
-            // Initialize each process and place it in a process queue
+            // Initialize each process and place it in a list
             List<Process> processList = new ArrayList<Process>();
             for (int i = 0; i < numProcesses; i++) {
                 Process process = initProcess();
@@ -174,8 +197,8 @@ public class Driver {
             // Make test process list for testing purposes
             List<Process> testProcessList = getTestProcessList();
 
-            // Print out process queue
-            printProcessesToExecute(testProcessList);
+            // Print out process list
+            printProcessesToExecute(processList);
 
             // Initialize the scheduler
             Scheduler scheduler = new Scheduler(timeQuantum);
@@ -184,9 +207,8 @@ public class Driver {
             Runtime.getRuntime().addShutdownHook(
                 new InterruptHandler(scheduler.getCompletedProcesses(), scheduler.getTotalTime()));
 
-
             // Schedule the processes
-            scheduler.roundRobin(testProcessList);
+            scheduler.roundRobin(processList);
 
             // Print summary of completed results
             System.out.printf("\n\n*** All processes completed ***\n");
@@ -196,6 +218,7 @@ public class Driver {
             // Exit the program
             Runtime.getRuntime().halt(0);
 
+        // If the user failed to supply appropriate command line arguments, then print the program usage
         } else {
             printUsage();
         }

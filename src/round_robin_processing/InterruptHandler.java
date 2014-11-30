@@ -4,11 +4,13 @@ import java.util.List;
 
 public class InterruptHandler extends Thread {
     /*
-     * Inner class to handle interrupt during process execution.
+     * Handles user interrupt during process simulation.
      */
 
+    // Define class attributes
     List<Process> completedProcesses;
     Double totalTime;
+
 
     public InterruptHandler(List<Process> compProcs, Double totTime) {
         /*
@@ -19,10 +21,11 @@ public class InterruptHandler extends Thread {
         totalTime = totTime;
     }
 
+
     @Override
     public void run() {
         /*
-         * Method to run interrupt handler code
+         * Method to run interrupt handler code.
          */
 
         System.out.printf("\n\nUser interrupt detected.\n\n");

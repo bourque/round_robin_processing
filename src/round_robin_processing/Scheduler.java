@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Iterator;
 
 public class Scheduler {
+    /*
+     * Provides methods to schedule process and keep track of system times.
+    */
 
-    // Scheduler attributes
+    // Define class attributes
     Double totalTime = 0.0;
     List<Process> completedProcesses = new ArrayList<Process>();
     Double timeQuantum = 1.0;
+
 
     public Scheduler(Double tq) {
         /*
@@ -18,6 +22,7 @@ public class Scheduler {
 
         timeQuantum = tq;
     }
+
 
     private void addWaitTime(List<Process> readyQueue, Double waitTime) {
         /*
@@ -30,6 +35,7 @@ public class Scheduler {
         }
     }
 
+
     public List<Process> getCompletedProcesses() {
         /*
          * Return the list of completed processes.
@@ -37,6 +43,7 @@ public class Scheduler {
 
         return this.completedProcesses;
     }
+
 
     private int getNextArrival(List<Process> processList) {
         /*
@@ -57,6 +64,7 @@ public class Scheduler {
         return index;
     }
 
+
     public Double getTotalTime() {
         /*
          * Return the total system time.
@@ -64,6 +72,7 @@ public class Scheduler {
 
         return this.totalTime;
     }
+
 
     public void roundRobin(List<Process> processList) {
         /*
@@ -73,6 +82,7 @@ public class Scheduler {
         // Initialize dispatcher
         Dispatcher dispatcher = new Dispatcher();
 
+        // Continue only when there are processes still to be executed
         while (!processList.isEmpty()) {
 
             // Move next process into ready queue
@@ -82,15 +92,16 @@ public class Scheduler {
             readyQueue.add(nextProcess);
             processList.remove(nextArrival);
 
-            // Starve until next process
+            // Starve the CPU until the next process arrives
             Double starveTime = readyQueue.get(0).arrivalTime - this.totalTime;
             dispatcher.starve(starveTime);
             this.totalTime = this.totalTime + starveTime;
             System.out.printf("Process PID = %d has arrived", readyQueue.get(0).pid);
 
+            // Schedule the processes in the ready queue
             while (!readyQueue.isEmpty()) {
 
-                // Get next process
+                // Get the next process
                 Process p = readyQueue.get(0);
                 System.out.printf("\n\n\tLoading process PID = %d\n", p.pid);
                 System.out.printf("\tProcess burst time: %f\n", p.burstTime);
@@ -99,8 +110,6 @@ public class Scheduler {
 
                 // If the process execution time is greater or equal to one
                 // time quantum, then execute the process for one time quantum.
-                // If the execution time is less one time quantum, then execute
-                // the remainder of the process.
                 if (p.executionTime >= this.timeQuantum) {
                     dispatcher.dispatch(p.pid, this.timeQuantum);
                     p.executionTime = p.executionTime - this.timeQuantum;
@@ -108,6 +117,9 @@ public class Scheduler {
                     addWaitTime(readyQueue, this.timeQuantum);
                     readyQueue.remove(0);
                     System.out.printf("\tSystem time: %f\n", this.totalTime);
+                    
+                // If the execution time is less one time quantum, then execute
+                // the remainder of the process.
                 } else {
                     dispatcher.dispatch(p.pid, p.executionTime);
                     this.totalTime = this.totalTime + p.executionTime;

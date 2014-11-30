@@ -1,7 +1,11 @@
 //package round_robin_processing;
 
 public class Process {
+    /*
+     * Provides process attributes.
+    */
 
+    // Define class attributes
     Integer pid;
     Double arrivalTime;
     Double burstTime;
@@ -9,11 +13,13 @@ public class Process {
     Double waitTime;
     Double turnaroundTime;
 
+
     public Process() {
         /*
          * Constructor method.
          */
 
+        // Assign default process attributes
         pid = 1;
         arrivalTime = 0.0;
         burstTime = 0.0;

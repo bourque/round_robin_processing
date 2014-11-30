@@ -1,17 +1,21 @@
 //package round_robin_processing;
 
 public class Dispatcher {
+    /*
+     * Provides methods to dispatch a process to a CPU.
+    */
+
 
     private int convertToMillis(Double cpuTime) {
         /*
-         * Convert the time quantum from double (in seconds) to integer (in
-         * milliseconds)
+         * Convert the time quantum from double (in seconds) to integer (in milliseconds)
          */
 
         Double cpuTimeMilli = cpuTime * 1000;
         int cpuTimeInt = cpuTimeMilli.intValue();
         return cpuTimeInt;
     }
+
 
     public void dispatch(int pid, Double cpuTime) {
         /*
@@ -21,9 +25,10 @@ public class Dispatcher {
         execute(pid, convertToMillis(cpuTime));
     }
 
+
     private void execute(int pid, int cpuTime) {
         /*
-         * Suspend the program execution for the timeQuantum amount.
+         * Execute the process for the timeQuantum amount.
          */
 
         try {
@@ -33,6 +38,7 @@ public class Dispatcher {
             Thread.currentThread().interrupt();
         }
     }
+
 
     public void starve(Double cpuTime) {
         /*
@@ -48,5 +54,4 @@ public class Dispatcher {
             Thread.currentThread().interrupt();
         }
     }
-    
 }
