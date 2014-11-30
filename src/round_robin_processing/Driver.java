@@ -95,14 +95,14 @@ public class Driver {
         return arguments;
     }
 
-    private static void printProcessesToExecute(List<Process> processQueue) {
+    private static void printProcessesToExecute(List<Process> processList) {
         /*
          * Prints out the processes to be executed.
         */
 
         System.out.println("\n\nProcesses generated:");
-        for (int i=0; i<processQueue.size(); i++) {
-            Process p = processQueue.get(i);
+        for (int i=0; i<processList.size(); i++) {
+            Process p = processList.get(i);
             System.out.printf("\nPID = %d\n", p.pid);
             System.out.printf("Burst Time: %f\n", p.burstTime);
             System.out.printf("Arrival Time: %f\n", p.arrivalTime);
@@ -137,14 +137,14 @@ public class Driver {
             }
 
             // Initialize each process and place it in a process queue
-            List<Process> processQueue = new ArrayList<Process>();
+            List<Process> processList = new ArrayList<Process>();
             for (int i = 0; i < numProcesses; i++) {
                 Process process = initProcess();
-                processQueue.add(process);
+                processList.add(process);
             }
 
             // Print out process queue
-            printProcessesToExecute(processQueue);
+            printProcessesToExecute(processList);
 
             // Initialize the scheduler
             Scheduler scheduler = new Scheduler(timeQuantum);
@@ -154,7 +154,7 @@ public class Driver {
                 new InterruptHandler(scheduler.getCompletedProcesses(), scheduler.getTotalTime()));
 
             // Schedule the processes
-            scheduler.roundRobin(processQueue);
+            scheduler.roundRobin(processList);
 
             // Print summary of completed results
             System.out.printf("\n\n*** All processes completed ***\n");

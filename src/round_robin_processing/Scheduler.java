@@ -65,7 +65,7 @@ public class Scheduler {
         return this.totalTime;
     }
 
-    public void roundRobin(List<Process> processQueue) {
+    public void roundRobin(List<Process> processList) {
         /*
          * Execute the scheduler using Round-Robin Scheduling.
          */
@@ -73,14 +73,14 @@ public class Scheduler {
         // Initialize dispatcher
         Dispatcher dispatcher = new Dispatcher();
 
-        while (!processQueue.isEmpty()) {
+        while (!processList.isEmpty()) {
 
             // Move next process into ready queue
             List<Process> readyQueue = new ArrayList<Process>();
-            int nextArrival = getNextArrival(processQueue);
-            Process nextProcess = processQueue.get(nextArrival);
+            int nextArrival = getNextArrival(processList);
+            Process nextProcess = processList.get(nextArrival);
             readyQueue.add(nextProcess);
-            processQueue.remove(nextArrival);
+            processList.remove(nextArrival);
 
             // Starve until next process
             Double starveTime = readyQueue.get(0).arrivalTime;
@@ -118,7 +118,7 @@ public class Scheduler {
                 }
 
                 // Check to see if any new processes have arrived. If so, move them into the ready queue
-                for (Iterator<Process> iterator = processQueue.iterator(); iterator.hasNext();) {
+                for (Iterator<Process> iterator = processList.iterator(); iterator.hasNext();) {
                     Process newProc = iterator.next();
                     if (newProc.arrivalTime <= this.totalTime) {
                         System.out.printf("Process PID = %d has arrived\n", newProc.pid);
@@ -140,7 +140,7 @@ public class Scheduler {
 
             // Ready Queue is empty, but there are still processes yet to arrive
             // so reschedule remaining processes
-            roundRobin(processQueue);
+            roundRobin(processList);
         }
     }
 }
