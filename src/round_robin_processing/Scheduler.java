@@ -1,4 +1,4 @@
-//package round_robin_processing;
+package round_robin_processing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +117,7 @@ public class Scheduler {
                     addWaitTime(readyQueue, this.timeQuantum);
                     readyQueue.remove(0);
                     System.out.printf("\tSystem time: %f\n", this.totalTime);
-                    
+
                 // If the execution time is less one time quantum, then execute
                 // the remainder of the process.
                 } else {
