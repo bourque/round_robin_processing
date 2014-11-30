@@ -83,7 +83,7 @@ public class Scheduler {
             processList.remove(nextArrival);
 
             // Starve until next process
-            Double starveTime = readyQueue.get(0).arrivalTime;
+            Double starveTime = readyQueue.get(0).arrivalTime - this.totalTime;
             dispatcher.starve(starveTime);
             this.totalTime = this.totalTime + starveTime;
             System.out.printf("Process PID = %d has arrived", readyQueue.get(0).pid);
