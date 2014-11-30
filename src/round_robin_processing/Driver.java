@@ -69,6 +69,34 @@ public class Driver {
         return pid;
     }
 
+    private static List<Process> getTestProcessList() {
+        /*
+         * Return a list of processes to test with.
+        */
+
+        Process p1 = new Process();
+        p1.pid = 1;
+        p1.arrivalTime = 3.0;
+        p1.burstTime = 5.0;
+        p1.executionTime = p1.burstTime;
+        Process p2 = new Process();
+        p2.pid = 2;
+        p2.arrivalTime = 12.0;
+        p2.burstTime = 5.0;
+        p2.executionTime = p2.burstTime;
+        Process p3 = new Process();
+        p3.pid = 3;
+        p3.arrivalTime = 15.0;
+        p3.burstTime = 5.0;
+        p3.executionTime = p3.burstTime;
+        List<Process> testProcessList = new ArrayList<Process>();
+        testProcessList.add(p1);
+        testProcessList.add(p2);
+        testProcessList.add(p3);
+
+        return testProcessList;
+    }
+
     private static Process initProcess() {
         /*
          * Create new process and assign it atributes.
@@ -143,8 +171,11 @@ public class Driver {
                 processList.add(process);
             }
 
+            // Make test process list for testing purposes
+            List<Process> testProcessList = getTestProcessList();
+
             // Print out process queue
-            printProcessesToExecute(processList);
+            printProcessesToExecute(testProcessList);
 
             // Initialize the scheduler
             Scheduler scheduler = new Scheduler(timeQuantum);
@@ -153,8 +184,9 @@ public class Driver {
             Runtime.getRuntime().addShutdownHook(
                 new InterruptHandler(scheduler.getCompletedProcesses(), scheduler.getTotalTime()));
 
+
             // Schedule the processes
-            scheduler.roundRobin(processList);
+            scheduler.roundRobin(testProcessList);
 
             // Print summary of completed results
             System.out.printf("\n\n*** All processes completed ***\n");
