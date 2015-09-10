@@ -1,5 +1,3 @@
-package round_robin_processing;
-
 import java.util.List;
 
 public class InterruptHandler extends Thread {

@@ -1,5 +1,3 @@
-package round_robin_processing;
-
 public class Dispatcher {
     /*
      * Provides methods to dispatch a process to a CPU.

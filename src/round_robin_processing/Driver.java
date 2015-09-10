@@ -1,5 +1,3 @@
-package round_robin_processing;
-
 /*
 Process Simulation Using Round-Robin Scheduling
 COSC 519
@@ -9,7 +7,7 @@ Authors:
     Ravi Chandra
 
 Purpose:
-    This program simulates a the creation, loading, scheduling, dispatching, and execution of 
+    This program simulates a the creation, loading, scheduling, dispatching, and execution of
     processes using the round-robin scheduling algorithm.
 
 Classes:
@@ -23,9 +21,13 @@ Classes:
         ProcessSummary - Prints a summary of completed processes showing process statistics.
 
 Usage:
+    The program can be compiled as such:
+
+        >>> javac Driver.java
+
     The program is executed with two command line arguments:
 
-        >>> java <numProcs> <timeQuantum>
+        >>> java Driver <numProcs> <timeQuantum>
 
     <numProcs> - The number of processes to create and simulate
     <timeQuantum> - The quantum time used during scheduling

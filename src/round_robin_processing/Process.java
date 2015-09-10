@@ -1,5 +1,3 @@
-package round_robin_processing;
-
 public class Process {
     /*
      * Provides process attributes.
